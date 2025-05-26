@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Items Page</title>
+    </head>
+    <body>
+        <h1>Items Page</h1>
+
+        <table border="1">
+            <thead>
+            <tr>
+                <th>Item Name</th>
+                <th>Description</th>
+                <th>Price</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${items}">
+                <td>
+                    <a th:href="@{/comments/{id}(id=${item.id})}" th:text="${item.itemName}"></a>
+                </td>
+                <td th:text="${item.itemDescription}"></td>
+                <td th:text="${item.price}"></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <br>
+        <form action="/logout" method="get">
+            <button type="submit">Logout</button>
+        </form>
+    </body>
+</html>
