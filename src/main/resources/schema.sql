@@ -19,3 +19,10 @@ CREATE TABLE WEBSHOPUSER (
                       password VARCHAR(255) NOT NULL,
                       role VARCHAR(50) NOT NULL
 );
+
+CREATE TABLE ADDRESS (
+                         id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                         street VARCHAR(255) NOT NULL,
+                         house_number VARCHAR(50) NOT NULL,
+                         postal_code VARCHAR(50) NOT NULL
+);
