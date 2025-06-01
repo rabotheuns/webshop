@@ -1,28 +1,34 @@
 <!DOCTYPE html>
-    <html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>Admin Page</title>
-    </head>
-    <body>
-        <h1>Admin Page</h1>
-        <table border="1">
-            <thead>
-            <tr>
-                <th>Username</th>
-                <th>Password</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="user : ${users}">
-                <td th:text="${user.username}"></td>
-                <td th:text="${user.password}"></td>
-            </tr>
-            </tbody>
-        </table>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Page</title>
+</head>
+<body>
+    <h1>Admin Page</h1>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>Username</th>
+            <th>Password</th>
+            <th>Street</th>
+            <th>House Number</th>
+            <th>Postal Code</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.username}"></td>
+            <td th:text="${user.password}"></td>
+            <td th:text="${user.address.street}"></td>
+            <td th:text="${user.address.houseNumber}"></td>
+            <td th:text="${user.address.postalCode}"></td>
+        </tr>
+        </tbody>
+    </table>
 
-        <br>
-        <form action="/logout" method="get">
-            <button type="submit">Logout</button>
-        </form>
-    </body>
+    <br>
+    <form action="/logout" method="get">
+        <button type="submit">Logout</button>
+    </form>
+</body>
 </html>

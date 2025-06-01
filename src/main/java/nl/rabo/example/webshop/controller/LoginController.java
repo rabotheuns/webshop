@@ -1,8 +1,11 @@
 package nl.rabo.example.webshop.controller;
 
 import jakarta.servlet.http.HttpSession;
+import nl.rabo.example.webshop.entity.Item;
+import nl.rabo.example.webshop.entity.ShoppingCart;
 import nl.rabo.example.webshop.entity.WebshopUser;
 import nl.rabo.example.webshop.repository.ItemRepository;
+import nl.rabo.example.webshop.repository.ShoppingCartRepository;
 import nl.rabo.example.webshop.repository.WebshopUserRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,10 +26,12 @@ public class LoginController {
 
     private final WebshopUserRepository webshopUserRepository;
     private final ItemRepository itemRepository;
+    private final ShoppingCartRepository shoppingCartRepository;
 
-    public LoginController(WebshopUserRepository webshopUserRepository, ItemRepository itemRepository) {
+    public LoginController(WebshopUserRepository webshopUserRepository, ItemRepository itemRepository, ShoppingCartRepository shoppingCartRepository) {
         this.webshopUserRepository = webshopUserRepository;
         this.itemRepository = itemRepository;
+        this.shoppingCartRepository = shoppingCartRepository;
     }
 
     @GetMapping("/login")
@@ -64,8 +69,8 @@ public class LoginController {
             return "redirect:/login";
         }
 
-        String username = (String) session.getAttribute(USERNAME_ATTRIBUTE);
-        if (!ADMIN_USER_TYPE.equals(username)) {
+        String userType = (String) session.getAttribute(USERNAME_ATTRIBUTE);
+        if (!ADMIN_USER_TYPE.equals(userType)) {
             return "redirect:/login";
         }
 
@@ -96,5 +101,66 @@ public class LoginController {
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/login";
+    }
+
+    @GetMapping("/cart")
+    public String showCartPage(HttpSession session, Model model) {
+        if (!isLoggedIn(session)) {
+            return "redirect:/login";
+        }
+
+        String username = (String) session.getAttribute(USERNAME_ATTRIBUTE);
+        ShoppingCart cart = shoppingCartRepository.findByUserUsername(username);
+
+        if (cart == null || cart.getItems().isEmpty()) {
+            model.addAttribute("emptyCartMessage", "Your cart is empty.");
+        } else {
+            model.addAttribute("cart", cart);
+            double total = cart.getItems().stream()
+                    .mapToDouble(item -> item.getPrice())
+                    .sum();
+            model.addAttribute("total", total);
+        }
+
+        return "cart";
+    }
+
+    @PostMapping("/cart/add")
+    public String addToCart(@RequestParam Long itemId, HttpSession session) {
+        if (!isLoggedIn(session)) {
+            return "redirect:/login";
+        }
+
+        String username = (String) session.getAttribute(USERNAME_ATTRIBUTE);
+        ShoppingCart cart = shoppingCartRepository.findByUserUsername(username);
+        if (cart == null) {
+            cart = new ShoppingCart();
+            cart.setUser(webshopUserRepository.findByUsername(username).orElseThrow());
+        }
+
+        Item item = itemRepository.findById(itemId).orElseThrow();
+        cart.getItems().add(item);
+        shoppingCartRepository.save(cart);
+
+        return "redirect:/items";
+    }
+
+    @GetMapping("/checkout")
+    public String showCheckoutPage(HttpSession session, Model model) {
+        if (!isLoggedIn(session)) {
+            return "redirect:/login";
+        }
+
+        String username = (String) session.getAttribute(USERNAME_ATTRIBUTE);
+        ShoppingCart cart = shoppingCartRepository.findByUserUsername(username);
+        WebshopUser user = webshopUserRepository.findByUsername(username).orElseThrow();
+
+        model.addAttribute("cart", cart);
+        model.addAttribute("address", user.getAddress());
+
+        cart.getItems().clear();
+        shoppingCartRepository.save(cart);
+
+        return "checkout";
     }
 }

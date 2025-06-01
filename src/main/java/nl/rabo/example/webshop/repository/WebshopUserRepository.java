@@ -19,7 +19,7 @@ public class WebshopUserRepository {
     private EntityManager entityManager;
 
     public Optional<WebshopUser> findByUsernameAndPassword(String username, String password) {
-        String queryString = "SELECT * FROM WebshopUser WHERE username = '" + username + "' AND password = '" + password + "'";
+        String queryString = "SELECT * FROM Webshop_User WHERE username = '" + username + "' AND password = '" + password + "'";
         Query query = entityManager.createNativeQuery(queryString, WebshopUser.class);
 
         Optional result = query.getResultList().stream().findFirst();
@@ -34,7 +34,7 @@ public class WebshopUserRepository {
     }
 
     public List<WebshopUser> findAll() {
-        String queryString = "SELECT * FROM WebshopUser";
+        String queryString = "SELECT * FROM Webshop_User";
         Query query = entityManager.createNativeQuery(queryString, WebshopUser.class);
         return query.getResultList();
     }
@@ -53,7 +53,7 @@ public class WebshopUserRepository {
         Long addressId = ((Number) entityManager.createNativeQuery(getAddressIdQuery).getSingleResult()).longValue();
 
 
-        String insertQuery = "INSERT INTO WebshopUser (username, password, role, address_id) VALUES (:username, :password, :role, :addressId)";
+        String insertQuery = "INSERT INTO Webshop_User (username, password, role, address_id) VALUES (:username, :password, :role, :addressId)";
         Query query = entityManager.createNativeQuery(insertQuery);
         query.setParameter("username", user.getUsername());
         query.setParameter("password", user.getPassword());
@@ -61,5 +61,12 @@ public class WebshopUserRepository {
         query.setParameter("addressId", addressId);
         query.executeUpdate();
         return user;
+    }
+
+    public Optional<WebshopUser> findByUsername(String username) {
+        String queryString = "SELECT * FROM Webshop_User WHERE username = '" + username + "'";
+        Query query = entityManager.createNativeQuery(queryString, WebshopUser.class);
+
+        return query.getResultList().stream().findFirst();
     }
 }

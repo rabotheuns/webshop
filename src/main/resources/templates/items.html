@@ -21,9 +21,18 @@
                 </td>
                 <td th:text="${item.itemDescription}"></td>
                 <td th:text="${item.price}"></td>
+                <td>
+                    <form th:action="@{/cart/add}" method="post">
+                        <input type="hidden" name="itemId" th:value="${item.id}" />
+                        <button type="submit">Add to Cart</button>
+                    </form>
+                </td>
             </tr>
             </tbody>
         </table>
+
+        <br>
+        <a href="/cart">View Cart</a>
 
         <br>
         <form action="/logout" method="get">

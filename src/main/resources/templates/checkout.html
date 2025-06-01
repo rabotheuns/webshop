@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Checkout</title>
+</head>
+<body>
+    <h1>Your order has been placed and will be shipped to your address!</h1>
+    <h2>Shipping Address</h2>
+    <p th:text="${address.street} + ' ' + ${address.houseNumber}"></p>
+    <p th:text="${address.postalCode}"></p>
+
+    <h2>Items</h2>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>Item Name</th>
+            <th>Description</th>
+            <th>Price</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${cart.items}">
+            <td th:text="${item.itemName}"></td>
+            <td th:text="${item.itemDescription}"></td>
+            <td th:text="${item.price}"></td>
+        </tr>
+        </tbody>
+    </table>
+</body>
+</html>
