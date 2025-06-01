@@ -34,6 +34,7 @@ public class RegisterController {
         WebshopUser user = new WebshopUser();
         user.setUsername(username);
         user.setPassword(password);
+        user.setRole("CUSTOMER");
 
         Address address = new Address();
         address.setStreet(street);
