@@ -34,6 +34,18 @@ public class LoginController {
         this.shoppingCartRepository = shoppingCartRepository;
     }
 
+    @GetMapping("/")
+    public String handleEmptyURL(HttpSession session) {
+        if (session.getAttribute(USER_TYPE_ATTRIBUTE) != null) {
+            String userType = (String) session.getAttribute(USER_TYPE_ATTRIBUTE);
+            if (ADMIN_USER_TYPE.equals(userType)) {
+                return "redirect:/admin";
+            }
+            return "redirect:/items";
+        }
+        return "login";
+    }
+
     @GetMapping("/login")
     public String showLoginPage(HttpSession session) {
         if (session.getAttribute(USER_TYPE_ATTRIBUTE) != null) {
